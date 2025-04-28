@@ -1,9 +1,43 @@
-<script lang="ts" setup>
+<script setup lang="ts">
+import InputText from 'primevue/inputtext';
 
+const model = defineModel({
+    type: String,
+    required: true
+});
+
+defineProps({
+    placeholder: {
+        type: String,
+        default: ''
+    },
+    maxlength: {
+        type: Number,
+        default: null
+    },
+    type: {
+        type: String,
+        default: 'text'
+    },
+    required: {
+        type: Boolean,
+        default: false
+    }
+});
 </script>
 
 <template>
-    <slot></slot>
+    <div class="input-wrapper">
+        <InputText v-model="model" :placeholder="placeholder" :maxlength="maxlength" :type="type" :required="required"
+            class="p-inputtext" />
+    </div>
 </template>
 
-<style lang="scss" scoped></style>
+
+
+<style scoped>
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+</style>

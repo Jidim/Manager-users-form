@@ -1,17 +1,6 @@
-import type { User, AccountType } from "./types";
-import { AccountTypeEnum } from "./types";
-
-
-export const accountTypes: AccountType = {
-  [AccountTypeEnum.Local]: {
-    id: AccountTypeEnum.Local,
-    label: 'Локальная'
-  },
-  [AccountTypeEnum.LDAP]: {
-    id: AccountTypeEnum.LDAP,
-    label: 'LDAP'
-  }
-} as const
+import type { User } from "@/stores/types";
+import { AccountTypeEnum } from "@/stores/types";
+import { accountTypes } from "@/configs/accountTypes";
 
 export const users: User[] = [
   {

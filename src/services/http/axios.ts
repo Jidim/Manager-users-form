@@ -2,7 +2,7 @@ import axios from "axios";
 import { AxiosError } from "axios";
 import { ERRORS } from "@/configs/httpErrors";
 
-const HOST = import.meta.env.VITE_URL_API;
+const HOST = import.meta.env.VITE_API_URL;
 
 const axiosClient = axios.create({
   baseURL: HOST,

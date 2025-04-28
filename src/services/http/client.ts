@@ -19,16 +19,16 @@ import { axiosClient, handleAxiosError } from "./axios"
 
 const client = {
     get(url: string) {
-        return handleAxiosError(() => axiosClient.get(url))
+        return handleAxiosError(() => axiosClient.get(url).then(response => response.data))
     },
     post(url: string, body: { [name: string]: unknown }) {
-        return handleAxiosError(() => axiosClient.post(url, body))
+        return handleAxiosError(() => axiosClient.post(url, body).then(response => response.data))
     },
     put(url: string, body: { [name: string]: unknown }) {
-        return handleAxiosError(() => axiosClient.put(url, body))
+        return handleAxiosError(() => axiosClient.put(url, body).then(response => response.data))
     },
     delete(url: string) {
-        return handleAxiosError(() => axiosClient.delete(url))
+        return handleAxiosError(() => axiosClient.delete(url).then(response => response.data))
     }
 }
 

@@ -1,4 +1,14 @@
 <script lang="ts" setup>
+import UserService from '@/services/usersService';
+import type { User } from '@/stores/types';
+import { ref, watchEffect } from 'vue';
+const usersService = new UserService()
+
+const users = ref<User[]>([])
+
+usersService.getUsers().then(response => users.value = response)
+
+watchEffect(() => console.log(users.value))
 
 </script>
 
@@ -16,7 +26,7 @@
             </thead>
             <tbody>
                 <!-- Пример строки -->
-                <tr>
+                <tr v-for="user of users" :key="user.login">
                     <td>
                         <input type="text" name="labels" placeholder="Метки" />
                     </td>

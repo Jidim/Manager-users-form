@@ -11,6 +11,7 @@ export  enum AccountTypeEnum {
 export type AccountType = Record<AccountTypeEnum, AccountTypeRecord>;
 
 export type User = {
+    id: string, 
     marks: string[],
     account_type:  AccountTypeEnum,
     login: string,

@@ -10,8 +10,12 @@ import { ref } from 'vue';
 
 const userStore = useUsersStore()
 
-const deleteUser = (index: number) => {
-    userStore.users.splice(index, 1)
+const deleteUser = (id: string) => {
+    userStore.deleteUser(id)
+}
+
+const saveUser = (user: User) => {
+    userStore.updateUser(user)
 }
 
 const changeAccountType = (user: User) => {
@@ -23,6 +27,7 @@ const changeAccountType = (user: User) => {
             user.account_type = AccountTypeEnum.LDAP
             user.password = ''
     }
+    saveUser(user)
 }
 
 const showPasswords = ref<Record<string, boolean>>({})
@@ -44,9 +49,10 @@ function togglePassword(login: string) {
             </tr>
         </thead>
         <tbody>
-            <tr v-for="user, index of userStore.users" :key="user.login">
+            <tr v-for="user of userStore.users" :key="user.id">
                 <td>
-                    <AppMultiplyInput v-model="user.marks" placeholder="Укажите метки" join-separate=";" />
+                    <AppMultiplyInput :update:model-value="saveUser(user)" v-model="user.marks"
+                        placeholder="Укажите метки" join-separate=";" />
                 </td>
                 <td>
                     <AppSelect @update:model-value="changeAccountType(user)"
@@ -54,12 +60,13 @@ function togglePassword(login: string) {
                         v-model="user.account_type" />
                 </td>
                 <td :colspan="user.account_type != AccountTypeEnum.LDAP ? 1 : 2">
-                    <AppInput v-model="user.login" :required="true" placeholder="Логин пользователя" />
+                    <AppInput :update:model-value="saveUser(user)" v-model="user.login" :required="true"
+                        placeholder="Логин пользователя" />
                 </td>
                 <td v-if="user.account_type != AccountTypeEnum.LDAP" class="password-cell">
                     <div class="password-wrapper">
-                        <AppInput v-model="user.password" :type="showPasswords[user.login] ? 'text' : 'password'"
-                            placeholder="Пароль" />
+                        <AppInput :update:model-value="saveUser(user)" v-model="user.password"
+                            :type="showPasswords[user.login] ? 'text' : 'password'" placeholder="Пароль" />
                         <button type="button" class="eye-button" aria-label="Показать/скрыть пароль"
                             @click="togglePassword(user.login)">
                             {{ showPasswords[user.login] ? '🙈' : '👁️' }}
@@ -67,7 +74,7 @@ function togglePassword(login: string) {
                     </div>
                 </td>
                 <td>
-                    <button type="button" @click="deleteUser(index)" class="delete-button"
+                    <button type="button" @click="deleteUser(user.id)" class="delete-button"
                         aria-label="Удалить запись">🗑️</button>
                 </td>
             </tr>

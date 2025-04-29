@@ -16,7 +16,7 @@ app.mount('#app')
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/mock-service.js', { type: 'module' })
+    navigator.serviceWorker.register('./src/mock/mock-service.js', { type: 'module' })
       .catch((error) => {
         console.error('Ошибка регистрации Service Worker:', error);
       });

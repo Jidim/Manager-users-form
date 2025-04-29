@@ -15,7 +15,10 @@ const deleteUser = (id: string) => {
 }
 
 const saveUser = (user: User) => {
-    userStore.updateUser(user)
+    console.log(isFieldInvalid(user, 'password'))
+    console.log(isFieldInvalid(user, 'login'))
+    if (!isFieldInvalid(user, 'password') && !isFieldInvalid(user, 'login'))
+        userStore.updateUser(user)
 }
 
 const changeAccountType = (user: User) => {
@@ -34,6 +37,17 @@ const showPasswords = ref<Record<string, boolean>>({})
 
 function togglePassword(login: string) {
     showPasswords.value[login] = !showPasswords.value[login]
+}
+
+function isFieldInvalid(user: User, field: string) {
+    if (field === 'login') {
+        const isDuplicate = userStore.users.some(existingUser => existingUser.login === user.login && existingUser.id !== user.id);
+        return isDuplicate;
+    }
+    if (field === 'password') {
+        return user.account_type === AccountTypeEnum.Local && !user.password;
+    }
+    return false;
 }
 </script>
 
@@ -57,16 +71,20 @@ function togglePassword(login: string) {
                 <td>
                     <AppSelect @update:model-value="changeAccountType(user)"
                         :options="Object.values(accountTypes).map(el => ({ label: el.label, value: el.id }))"
-                        v-model="user.account_type" />
+                        v-model="user.account_type" :class="{ 'is-invalid': isFieldInvalid(user, 'account_type') }"
+                        :required="true" />
                 </td>
-                <td :colspan="user.account_type != AccountTypeEnum.LDAP ? 1 : 2">
-                    <AppInput :update:model-value="saveUser(user)" v-model="user.login" :required="true"
-                        placeholder="Логин пользователя" />
+                <td :colspan="user.account_type !== AccountTypeEnum.LDAP ? 1 : 2">
+                    <AppInput @change="saveUser(user)" v-model="user.login"
+                        :required="user.account_type !== AccountTypeEnum.LDAP" :placeholder="'Логин пользователя'"
+                        :class="{ 'is-invalid': isFieldInvalid(user, 'login') }"
+                        :readonly="user.account_type === AccountTypeEnum.LDAP" />
                 </td>
-                <td v-if="user.account_type != AccountTypeEnum.LDAP" class="password-cell">
+                <td v-if="user.account_type === AccountTypeEnum.Local" class="password-cell">
                     <div class="password-wrapper">
-                        <AppInput :update:model-value="saveUser(user)" v-model="user.password"
-                            :type="showPasswords[user.login] ? 'text' : 'password'" placeholder="Пароль" />
+                        <AppInput :class="{ 'is-invalid': isFieldInvalid(user, 'password') }" @change="saveUser(user)"
+                            v-model="user.password" :type="showPasswords[user.login] ? 'text' : 'password'"
+                            placeholder="Пароль" :required="true" />
                         <button type="button" class="eye-button" aria-label="Показать/скрыть пароль"
                             @click="togglePassword(user.login)">
                             {{ showPasswords[user.login] ? '🙈' : '👁️' }}
@@ -74,8 +92,8 @@ function togglePassword(login: string) {
                     </div>
                 </td>
                 <td>
-                    <button type="button" @click="deleteUser(user.id)" class="delete-button"
-                        aria-label="Удалить запись">🗑️</button>
+                    <button type="button" @click="deleteUser(user.id)" class="delete-button" aria-label="Удалить запись"
+                        :disabled="isFieldInvalid(user, 'delete')">🗑️</button>
                 </td>
             </tr>
         </tbody>
@@ -83,6 +101,10 @@ function togglePassword(login: string) {
 </template>
 
 <style lang="scss" scoped>
+.is-invalid>* {
+    border-color: #c0392b !important;
+}
+
 .user-table {
     width: 100%;
     border-collapse: collapse;

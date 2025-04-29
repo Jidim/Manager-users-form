@@ -3,12 +3,10 @@ import { users } from "../src/mock/usersData"
 const HOST = 'http://localhost:5170';
 
 self.addEventListener('install', (event) => {
-  console.log('Service Worker установлен')
   self.skipWaiting()
 });
 
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker активирован')
 });
 
 

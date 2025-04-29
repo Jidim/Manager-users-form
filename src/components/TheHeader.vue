@@ -1,30 +1,64 @@
 <script setup lang="ts">
+import { useUsersStore } from '@/stores/users';
+import type { User } from '@/stores/types';
+import { AccountTypeEnum } from '@/stores/types';
+
+const userStore = useUsersStore()
+
+const addUser = () => {
+  const newUser: User = {
+    marks: [],
+    account_type: AccountTypeEnum.Local,
+    login: '',
+    password: ''
+  }
+
+  userStore.users.push(newUser)
+}
+
 </script>
 
 <template>
-    <header>
-        <h1>Учетные записи</h1>
-        <button type="button" aria-label="Добавить учетную запись">+</button>
-    </header>
+  <header class="page-header">
+    <h1>Учетные записи</h1>
+    <button type="button" @click="addUser" aria-label="Добавить учетную запись" class="add-button">+</button>
+  </header>
 </template>
 
 <style lang="scss" scoped>
-header {
-    line-height: 1.5;
-    max-height: 100vh;
-}
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #e0e0e0;
 
-@media (min-width: 1024px) {
-    header {
-        display: flex;
-        place-items: center;
-        padding-right: calc(var(--section-gap) / 2);
+  h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .add-button {
+    background-color: #409eff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #66b1ff;
     }
 
-    header .wrapper {
-        display: flex;
-        place-items: flex-start;
-        flex-wrap: wrap;
+    &:active {
+      background-color: #3a8ee6;
     }
+  }
 }
 </style>

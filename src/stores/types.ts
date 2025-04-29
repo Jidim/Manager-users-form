@@ -12,7 +12,7 @@ export type AccountType = Record<AccountTypeEnum, AccountTypeRecord>;
 
 export type User = {
     marks: string[],
-    account_type: AccountTypeRecord,
+    account_type:  AccountTypeEnum,
     login: string,
     password: string
 

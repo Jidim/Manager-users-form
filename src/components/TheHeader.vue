@@ -2,20 +2,21 @@
 import { useUsersStore } from '@/stores/users';
 import type { User } from '@/stores/types';
 import { AccountTypeEnum } from '@/stores/types';
+import { v4 as uuidv4 } from 'uuid';
 
 const userStore = useUsersStore()
 
 const addUser = () => {
   const newUser: User = {
+    id: uuidv4(),
     marks: [],
     account_type: AccountTypeEnum.Local,
-    login: '',
+    login: uuidv4(),
     password: ''
   }
 
-  userStore.users.push(newUser)
+  userStore.addUser(newUser)
 }
-
 </script>
 
 <template>
